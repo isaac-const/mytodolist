@@ -1,10 +1,12 @@
+// src/app/_layout.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import React, { useEffect } from 'react';
 
-// Configure axios base URL for all requests
-axios.defaults.baseURL = 'http://127.0.0.1:3333 '
+import { AuthProvider } from '../contexts/AuthContext';
+
+axios.defaults.baseURL = 'https://your-api.com';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export default function Layout() {
@@ -21,5 +23,9 @@ export default function Layout() {
     checkAuth();
   }, [router, segments]);
 
-  return <Slot />;
+  return (
+    <AuthProvider>
+      <Slot />
+    </AuthProvider>
+  );
 }
