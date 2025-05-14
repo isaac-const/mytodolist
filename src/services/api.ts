@@ -1,28 +1,25 @@
 // src/services/api.ts
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
+import { Platform } from 'react-native'
 
-// Cria instância base do axios
+const host = Platform.OS === 'android' ? '10.0.2.2' : 'localhost'
+
 const api = axios.create({
-  baseURL: 'http://10.0.2.2:3333',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: `http://${host}:3333`,
+  headers: { 'Content-Type': 'application/json' },
 })
 
-// Interceptor antes de cada requisição
+// Antes de cada requisição, injeta token do AsyncStorage
 api.interceptors.request.use(
   async config => {
-    // Pega o token salvo no AsyncStorage
     const token = await AsyncStorage.getItem('token')
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
   },
-  error => {
-    return Promise.reject(error)
-  }
+  error => Promise.reject(error)
 )
 
 export default api
